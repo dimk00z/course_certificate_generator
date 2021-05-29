@@ -15,7 +15,9 @@ def create_certificate(name, email, font_path,
                        template_path,
                        text_y_position=500,
                        font_size=150,
+                       text_color='#41634a',
                        output_directory='certificates'):
+
     out_put_path = str(Path('.') / f'{output_directory}/{name} - {email}.pdf')
     with Image.open(template_path, mode='r') as img_template:
         image_width = img_template.width
@@ -31,7 +33,7 @@ def create_certificate(name, email, font_path,
                 text_y_position
             ),
             name,
-            font=font, fill=(0, 0, 0, 0))
+            font=font, fill=text_color)
         with Image.new('RGB', img_template.size, (0, 0, 0)) as rgb_image:
             rgb_image.paste(img_template, mask=img_template.split()[3])
             rgb_image.save(out_put_path, 'PDF')
@@ -43,7 +45,9 @@ def main():
     template_path = str(Path('.') / 'template/template.png')
     for email, name in names.items():
         create_certificate(name, email, font_path,
-                           template_path, text_y_position=700)
+                           template_path,
+                           text_y_position=700,
+                           text_color='#fa3e51')
 
 
 if __name__ == '__main__':
