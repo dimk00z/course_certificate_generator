@@ -27,7 +27,7 @@ SMTP_SERVER=smtp.yandex.ru
 SMTP_PORT=465
 ```
 
-For correct working folder `template` should contain two files `template.png` and `email_template.txt`
+For correct working folder `template` contains two files `template.png` and `email_template.txt`(don't forget to add `{}` for adding name in email)
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
