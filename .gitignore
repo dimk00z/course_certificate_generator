@@ -115,4 +115,4 @@ dmypy.json
 certificates/
 names_list.txt
 font.ttf
-template.png
+template/
