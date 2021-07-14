@@ -86,7 +86,7 @@ def main():
     for email, name in graduates.items():
         certificate_file_name = create_certificate(name, email, font_path,
                                                    template_path,
-                                                   text_y_position=470,
+                                                   text_y_position=430,
                                                    text_color='#c1183e')
         graduates[email] = {'name': name,
                             'certificate_file_name': certificate_file_name}
