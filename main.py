@@ -5,7 +5,7 @@ from utils.email import send_email
 from time import sleep
 import logging
 
-TIMEOUT = 5
+TIMEOUT = 60
 
 
 def load_names(file_name: str):
@@ -86,8 +86,8 @@ def main():
     for email, name in graduates.items():
         certificate_file_name = create_certificate(name, email, font_path,
                                                    template_path,
-                                                   text_y_position=700,
-                                                   text_color='#fa3e51')
+                                                   text_y_position=470,
+                                                   text_color='#c1183e')
         graduates[email] = {'name': name,
                             'certificate_file_name': certificate_file_name}
         sended_email = send_certificate(script_params, email, name,
