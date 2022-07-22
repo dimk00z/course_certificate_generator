@@ -1,7 +1,9 @@
+import logging
 import smtplib
 
 import yagmail
-from yagmail.error import YagAddressError, YagConnectionClosed, YagInvalidEmailAddress
+from yagmail.error import (YagAddressError, YagConnectionClosed,
+                           YagInvalidEmailAddress)
 
 
 def send_email(
@@ -35,4 +37,5 @@ def send_email(
         smtplib.SMTPDataError,
         smtplib.SMTPServerDisconnected,
     ) as ex:
+        logging.debug(ex)
         return False
