@@ -116,3 +116,5 @@ certificates/
 names_list.txt
 font.ttf
 template/
+
+*.csv
