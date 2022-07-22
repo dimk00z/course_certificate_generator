@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "course_certificate_generator"
+version = "0.1.0"
+description = ""
+authors = ["Dimk00z"]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+Pillow = "9.0.1"
+python-dotenv = "0.17.1"
+yagmail = "0.15.*"
+pydantic = "^1.9.1"
+
+[tool.poetry.dev-dependencies]
+mypy = "^0.971"
+black = {version = "^22.6.0", allow-prereleases = true}
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

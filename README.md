@@ -25,6 +25,19 @@ EMAIL_PASSWORD=email_pass
 EMAIL_DISPLAY_NAME=send_name
 SMTP_SERVER=smtp.yandex.ru
 SMTP_PORT=465
+
+STUDENTS_FILE=
+FONT_FILE=
+TEMPLATE_PATH=
+EMAIL_TEMPLATE_PATH=
+
+TEXT_Y_POSITION=
+TEXT_COLOR=
+
+EMAIL_SUBJECT=
+
+TIMEOUT=
+
 ```
 
 For correct working folder `template` contains two files `template.png` and `email_template.txt`(don't forget to add `{}` for adding name in email)
