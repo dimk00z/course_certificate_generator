@@ -71,18 +71,13 @@ def send_certificate(script_params: AppSettings, email, name, certificate_file_n
 
 def main():
 
-    logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(level=logging.INFO)
 
     script_params: AppSettings = get_settings()
     logging.info(script_params)
-    logging.warning("Recheck params please")
-    if input("Have you check email's subject and template? y/n: ").lower() != "y":
-        return
 
     studets: list[Student] = Loader(script_params.students_file).load_students()
-    logging.debug("Loaded %d students", len(studets))
-    # TODO uncomment the line
-    return
+    logging.info("Loaded %d students", len(studets))
 
     font_path: str = str(Path(".") / script_params.font_file)
 
@@ -94,25 +89,13 @@ def main():
         with open(str(email_template_path)) as email_tamplate_file:
             email_template = email_tamplate_file.read()
     except FileNotFoundError as ex:
-        logging.debug(ex)
+        logging.info(ex)
         return
 
-    # script_params = load_params(
-    #     required_params=[
-    #         "EMAIL_SENDER",
-    #         "EMAIL_PASSWORD",
-    #         "EMAIL_DISPLAY_NAME",
-    #         "SMTP_SERVER",
-    #         "SMTP_PORT",
-    #     ]
-    # )
-
-    for student in studets:
-        email = student.email
-        name = student.name
-        certificate_file_name = create_certificate(
-            name,
-            email,
+    for student_index, student in enumerate(studets):
+        studets[student_index].certificate_file_name = create_certificate(
+            student.name,
+            student.email,
             font_path,
             template_path,
             text_y_position=script_params.text_y_position,
@@ -120,9 +103,21 @@ def main():
             font_size=script_params.font_size,
         )
 
-        sended_email = send_certificate(script_params, email, name, certificate_file_name, email_template)
+    print()
+    print(script_params.email_subject)
+    print(email_template)
+    print()
+
+    if input("Have you check email's subject and template? y/n: ").lower() != "y":
+        logging.info("Shut down")
+        return
+
+    for student in studets:
+        sended_email = send_certificate(
+            script_params, student.email, student.name, student.certificate_file_name, email_template
+        )
         if sended_email:
-            logging.info(f"Sended to {email}")
+            logging.info(f"Sended to {student.email}")
         sleep(script_params.timeout)
 
 

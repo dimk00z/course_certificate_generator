@@ -18,7 +18,7 @@ class Loader:
                     string_words = string.replace("\t", " ").split()
                     students.append(Student(email=string_words[-1], name=" ".join(string_words[1::-1])))
         except FileNotFoundError as ex:
-            logging.debug(ex)
+            logging.info(ex)
 
         return students
 
@@ -32,7 +32,7 @@ class Loader:
                         continue
                     students.append(Student(email=row[-1], name=row[-2]))
         except FileNotFoundError as ex:
-            logging.debug(ex)
+            logging.info(ex)
         return students
 
     def load_students(self) -> list[Student]:

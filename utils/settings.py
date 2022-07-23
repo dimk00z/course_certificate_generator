@@ -12,8 +12,8 @@ class AppSettings(BaseSettings):
 
     students_file: str = Field("names_list.txt", env="STUDENTS_FILE")
 
-    font_file: str = Field("font.ttf", env="FONT_SIZE")
-    font_size: int = Field(150, env="FONT_FILE")
+    font_file: str = Field("font.ttf", env="FONT_FILE")
+    font_size: int = Field(150, env="FONT_SIZE")
 
     template_path: str = Field("template/template.png", env="TEMPLATE_PATH")
     email_template_path: str = Field("template/email_template.txt", env="EMAIL_TEMPLATE_PATH")
