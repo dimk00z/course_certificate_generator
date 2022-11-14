@@ -112,12 +112,14 @@ def main():
         logging.info("Shut down")
         return
 
-    for student in studets:
+    for (index, student) in enumerate(studets):
         sended_email = send_certificate(
             script_params, student.email, student.name, student.certificate_file_name, email_template
         )
         if sended_email:
             logging.info(f"Sended to {student.email}")
+        if index + 1 == len(studets):
+            break
         sleep(script_params.timeout)
 
 
