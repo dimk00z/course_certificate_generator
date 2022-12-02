@@ -16,7 +16,11 @@ class Loader:
             with open(Path(".") / self.file_name) as file:
                 for string in file.readlines():
                     string_words = string.replace("\t", " ").split()
-                    students.append(Student(email=string_words[-1], name=" ".join(string_words[1::-1])))
+                    students.append(
+                        Student(
+                            email=string_words[-1], name=" ".join(string_words[1::-1])
+                        )
+                    )
         except FileNotFoundError as ex:
             logging.info(ex)
 
@@ -36,8 +40,8 @@ class Loader:
         return students
 
     def load_students(self) -> list[Student]:
-        file_extention: str = str(Path(self.file_name).suffix)
-        match file_extention:
+        file_extension: str = str(Path(self.file_name).suffix)
+        match file_extension:
             case ".txt":
                 return self._load_from_txt()
             case ".csv":

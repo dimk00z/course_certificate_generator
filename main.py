@@ -10,8 +10,8 @@ from utils.loader import Loader
 from utils.settings import AppSettings, get_settings
 
 
-def load_names(file_name: str):
-    names = {}
+def load_names(file_name: str) -> dict[str, str]:
+    names: dict[str, str] = {}
     with open(Path(".") / file_name) as file:
         for string in file.readlines():
             string_words = string.replace("\t", " ").split()
@@ -29,7 +29,6 @@ def create_certificate(
     text_color="#41634a",
     output_directory="certificates",
 ):
-
     output_path = str(Path(".") / f"{output_directory}/{name} - {email}.pdf")
     try:
         with Image.open(template_path, mode="r") as img_template:
@@ -52,7 +51,9 @@ def create_certificate(
         logging.error(f"Could not create certificate for {name}")
 
 
-def send_certificate(script_params: AppSettings, email, name, certificate_file_name, email_template):
+def send_certificate(
+    script_params: AppSettings, email, name, certificate_file_name, email_template
+):
     contents = [email_template.format(name)]
     attachments = [certificate_file_name]
 
@@ -70,14 +71,13 @@ def send_certificate(script_params: AppSettings, email, name, certificate_file_n
 
 
 def main():
-
     logging.basicConfig(level=logging.INFO)
 
     script_params: AppSettings = get_settings()
     logging.info(script_params)
 
-    studets: list[Student] = Loader(script_params.students_file).load_students()
-    logging.info("Loaded %d students", len(studets))
+    students: list[Student] = Loader(script_params.students_file).load_students()
+    logging.info("Loaded %d students", len(students))
 
     font_path: str = str(Path(".") / script_params.font_file)
 
@@ -86,14 +86,14 @@ def main():
     email_template_path: Path = Path(".") / script_params.email_template_path
 
     try:
-        with open(str(email_template_path)) as email_tamplate_file:
-            email_template = email_tamplate_file.read()
+        with open(str(email_template_path)) as email_template_file:
+            email_template = email_template_file.read()
     except FileNotFoundError as ex:
         logging.info(ex)
         return
 
-    for student_index, student in enumerate(studets):
-        studets[student_index].certificate_file_name = create_certificate(
+    for student_index, student in enumerate(students):
+        students[student_index].certificate_file_name = create_certificate(
             student.name,
             student.email,
             font_path,
@@ -108,17 +108,22 @@ def main():
     print(email_template)
     print()
 
-    if input("Have you check email's subject and template? y/n: ").lower() != "y":
+    question = "Have you check email's subject and template? y/n: "
+    if input("%s" % question).lower() != "y":
         logging.info("Shut down")
         return
 
-    for (index, student) in enumerate(studets):
-        sended_email = send_certificate(
-            script_params, student.email, student.name, student.certificate_file_name, email_template
+    for (index, student) in enumerate(students):
+        sent_email = send_certificate(
+            script_params,
+            student.email,
+            student.name,
+            student.certificate_file_name,
+            email_template,
         )
-        if sended_email:
-            logging.info(f"Sended to {student.email}")
-        if index + 1 == len(studets):
+        if sent_email:
+            logging.info(f"Sent to {student.email}")
+        if index + 1 == len(students):
             break
         sleep(script_params.timeout)
 

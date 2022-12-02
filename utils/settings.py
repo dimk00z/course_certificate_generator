@@ -16,7 +16,9 @@ class AppSettings(BaseSettings):
     font_size: int = Field(150, env="FONT_SIZE")
 
     template_path: str = Field("template/template.png", env="TEMPLATE_PATH")
-    email_template_path: str = Field("template/email_template.txt", env="EMAIL_TEMPLATE_PATH")
+    email_template_path: str = Field(
+        "template/email_template.txt", env="EMAIL_TEMPLATE_PATH"
+    )
 
     text_y_position: int = Field(430, env="TEXT_Y_POSITION")
     text_color: str = Field("#c1183e", env="TEXT_COLOR")
