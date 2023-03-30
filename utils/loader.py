@@ -18,7 +18,8 @@ class Loader:
                     string_words = string.replace("\t", " ").split()
                     students.append(
                         Student(
-                            email=string_words[-1], name=" ".join(string_words[1::-1])
+                            email=string_words[-1],
+                            name=" ".join(string_words[1::-1]),
                         )
                     )
         except FileNotFoundError as ex:
@@ -30,7 +31,7 @@ class Loader:
         students: list[Student] = []
         try:
             with open(Path(".") / self.file_name, encoding="utf8") as csv_file:
-                csv_reader = csv.reader(csv_file, delimiter=",")
+                csv_reader = csv.reader(csv_file, delimiter=";")
                 for line_index, row in enumerate(csv_reader):
                     if line_index == 0:
                         continue
@@ -41,9 +42,11 @@ class Loader:
 
     def load_students(self) -> list[Student]:
         file_extension: str = str(Path(self.file_name).suffix)
+        result: list[Student] = []
         match file_extension:
             case ".txt":
-                return self._load_from_txt()
+                result = self._load_from_txt()
             case ".csv":
-                return self._load_from_csv()
-        return []
+                result = self._load_from_csv()
+        # return result[:1]  # DEBUG
+        return result

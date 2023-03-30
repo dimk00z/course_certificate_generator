@@ -20,27 +20,41 @@ def load_names(file_name: str) -> dict[str, str]:
 
 
 def create_certificate(
-    name,
-    email,
-    font_path,
-    template_path,
-    text_y_position=500,
-    font_size=150,
+    *,
+    name: str,
+    email: str,
+    font_path: str,
+    template_path: str,
+    index: int,
+    text_y_position: int = 500,
+    font_size: int = 150,
     text_color="#41634a",
-    output_directory="certificates",
+    output_directory: str = "certificates",
 ):
-    output_path = str(Path(".") / f"{output_directory}/{name} - {email}.pdf")
+    index_text: str = f"_{index}" if index > 1 else ""
+    output_path = str(
+        Path(".") / f"{output_directory}/{name} - {email}{index_text}.pdf"
+    )
     try:
         with Image.open(template_path, mode="r") as img_template:
             image_width = img_template.width
             draw = ImageDraw.Draw(img_template)
             font = ImageFont.truetype(font_path, font_size)
             text_width, _ = draw.textsize(name, font=font)
+            # Reverted colors for text
+            rgb_im = img_template.convert("RGB")
+            r, g, b = rgb_im.getpixel(
+                (int((image_width - text_width) / 2), text_y_position)
+            )
+            r = 255 - r
+            g = 255 - g
+            b = 255 - b
             draw.text(
                 ((image_width - text_width) / 2, text_y_position),
                 name,
                 font=font,
-                fill=text_color,
+                # fill=text_color,
+                fill=(r, g, b),
             )
             with Image.new("RGB", img_template.size, (0, 0, 0)) as rgb_image:
                 rgb_image.paste(img_template, mask=img_template.split()[3])
@@ -52,10 +66,14 @@ def create_certificate(
 
 
 def send_certificate(
-    script_params: AppSettings, email, name, certificate_file_name, email_template
+    script_params: AppSettings,
+    email,
+    name,
+    certificate_files_names: list,
+    email_template,
 ):
     contents = [email_template.format(name)]
-    attachments = [certificate_file_name]
+    attachments = certificate_files_names
 
     return send_email(
         to_email=email,
@@ -81,7 +99,9 @@ def main():
 
     font_path: str = str(Path(".") / script_params.font_file)
 
-    template_path: str = str(Path(".") / script_params.template_path)
+    templates_paths: list[str] = [
+        str(Path(".") / path) for path in script_params.templates_paths
+    ]
 
     email_template_path: Path = Path(".") / script_params.email_template_path
 
@@ -93,15 +113,19 @@ def main():
         return
 
     for student_index, student in enumerate(students):
-        students[student_index].certificate_file_name = create_certificate(
-            student.name,
-            student.email,
-            font_path,
-            template_path,
-            text_y_position=script_params.text_y_position,
-            text_color=script_params.text_color,
-            font_size=script_params.font_size,
-        )
+        students[student_index].certificate_files_names = [
+            create_certificate(
+                name=student.name,
+                email=student.email,
+                font_path=font_path,
+                template_path=template_path,
+                index=index + 1,
+                text_y_position=script_params.text_y_position,
+                text_color=script_params.text_color,
+                font_size=script_params.font_size,
+            )
+            for index, template_path in enumerate(templates_paths)
+        ]
 
     print()
     print(script_params.email_subject)
@@ -118,7 +142,7 @@ def main():
             script_params,
             student.email,
             student.name,
-            student.certificate_file_name,
+            student.certificate_files_names,
             email_template,
         )
         if sent_email:
