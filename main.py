@@ -5,8 +5,8 @@ from time import sleep
 from PIL import Image, ImageDraw, ImageFont
 
 from entity.student import Student
-from utils.email import send_email
 from utils.loader import Loader
+from utils.sender import EmailSender
 from utils.settings import AppSettings, get_settings
 
 
@@ -65,29 +65,6 @@ def create_certificate(
         logging.error(f"Could not create certificate for {name}")
 
 
-def send_certificate(
-    script_params: AppSettings,
-    email,
-    name,
-    certificate_files_names: list,
-    email_template,
-):
-    contents = [email_template.format(name)]
-    attachments = certificate_files_names
-
-    return send_email(
-        to_email=email,
-        subject=script_params.email_subject,
-        contents=contents,
-        attachments=attachments,
-        smtp_server=script_params.smtp_server,
-        smtp_port=script_params.smtp_port,
-        email_sender=script_params.email_sender,
-        email_display_name=script_params.email_display_name,
-        email_password=script_params.email_password,
-    )
-
-
 def main():
     logging.basicConfig(level=logging.INFO)
 
@@ -136,16 +113,19 @@ def main():
     if input("%s" % question).lower() != "y":
         logging.info("Shut down")
         return
-
-    for (index, student) in enumerate(students):
-        sent_email = send_certificate(
-            script_params,
-            student.email,
-            student.name,
-            student.certificate_files_names,
-            email_template,
+    email_sender: EmailSender = EmailSender(
+        sender=script_params.email_sender,
+        password=script_params.email_password,
+        display_name=script_params.email_display_name,
+        subject=script_params.email_subject,
+    )
+    for index, student in enumerate(students):
+        contents = email_template.format(name=student.name)
+        attachments = student.certificate_files_names
+        email_sent: bool = email_sender(
+            attachments=attachments, to_email=student.email, contents=contents
         )
-        if sent_email:
+        if email_sent:
             logging.info(f"Sent to {student.email}")
         if index + 1 == len(students):
             break

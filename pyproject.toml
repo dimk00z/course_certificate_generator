@@ -8,15 +8,10 @@ authors = ["Dimk00z"]
 python = "^3.10"
 Pillow = "9.0.1"
 python-dotenv = "0.17.1"
-yagmail = "0.15.*"
 pydantic = "^1.9.1"
 
 [tool.poetry.dev-dependencies]
-mypy = "^0.971"
 black = {version = "^22.6.0", allow-prereleases = true}
-
-[tool.poetry.group.dev.dependencies]
-mypy = "^0.991"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
