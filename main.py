@@ -40,7 +40,7 @@ def create_certificate(
             image_width = img_template.width
             draw = ImageDraw.Draw(img_template)
             font = ImageFont.truetype(font_path, font_size)
-            text_width, _ = draw.textsize(name, font=font)
+            text_width = draw.textlength(name, font=font)
             # Reverted colors for text
             rgb_im = img_template.convert("RGB")
             r, g, b = rgb_im.getpixel(

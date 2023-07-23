@@ -114,8 +114,9 @@ dmypy.json
 .pyre/
 certificates/
 names_list.txt
-font.ttf
+*.ttf
 template/
 
 *.csv
 .idea
+.DS_Store
