@@ -2,6 +2,7 @@ import logging
 from pathlib import Path
 from time import sleep
 
+from jinja2 import Template
 from PIL import Image, ImageDraw, ImageFont
 
 from entity.student import Student
@@ -28,7 +29,7 @@ def create_certificate(
     index: int,
     text_y_position: int = 500,
     font_size: int = 150,
-    text_color="#41634a",
+    text_color: str | None = "#41634a",
     output_directory: str = "certificates",
 ):
     index_text: str = f"_{index}" if index > 1 else ""
@@ -53,8 +54,7 @@ def create_certificate(
                 ((image_width - text_width) / 2, text_y_position),
                 name,
                 font=font,
-                # fill=text_color,
-                fill=(r, g, b),
+                fill=text_color or (r, g, b),
             )
             with Image.new("RGB", img_template.size, (0, 0, 0)) as rgb_image:
                 rgb_image.paste(img_template, mask=img_template.split()[3])
@@ -120,7 +120,11 @@ def main():
         subject=script_params.email_subject,
     )
     for index, student in enumerate(students):
-        contents = email_template.format(name=student.name)
+        contents = Template(
+            email_template,
+        ).render(name=student.name)
+
+        # email_template.format(name=student.name)
         attachments = student.certificate_files_names
         email_sent: bool = email_sender(
             attachments=attachments, to_email=student.email, contents=contents
